@@ -8,23 +8,56 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include "mpu_reader.h"
+#include "motion_detection.h"
 
 /*---------------------------------------------------------------------------*/
-#define LOOP_INTERVAL (CLOCK_SECOND * 2)
-#define BUTTON_LEFT &button_left_sensor
+
+#define LOOP_INTERVAL           (CLOCK_SECOND * 2)
+#define OSCILLATION_THRESHOLD   1
+
+#define BUTTON_LEFT             &button_left_sensor
 
 /*---------------------------------------------------------------------------*/
 
 static struct etimer et;
+static struct mpu_values mpu_reading;
+// static struct mpu_values previous_reading;
 
 /*---------------------------------------------------------------------------*/
-
 
 PROCESS(sound_process, "sound process");
 AUTOSTART_PROCESSES(&sound_process);
 
 /*---------------------------------------------------------------------------*/
+
+/* Not having state checks for playing and stopping the buzzer causes
+   the tag to crash. */
+void play_frequency(int freq)
+{
+  if (!buzzer_state()) {
+    buzzer_start(freq);
+  } else {
+    buzzer_stop();
+    buzzer_start(freq);
+  }
+}
+
+void stop_buzzer()
+{
+  if (buzzer_state()) {
+    buzzer_stop();
+  }
+}
+
+int oscillation_to_frequency(int oscillation)
+{
+  return oscillation * 50; // turn some oscillation value into some frequency
+  // might also use frequencies given to it from other nodes so that it
+  // can harmonise
+  // that would give this function purpose enough to have its own file
+  // where we can also store information from other nodes
+}
+
 PROCESS_THREAD(sound_process, ev, data)
 {
   PROCESS_BEGIN();
@@ -41,24 +74,19 @@ PROCESS_THREAD(sound_process, ev, data)
         etimer_set(&et, LOOP_INTERVAL);
       }
     }
-    // } else if(ev == sensors_event && data == &mpu_9250_sensor) {
-      
-    // }
-    mpu_values values = get_mpu_reading();
-    print_mpu_readings(values);
+    
+    // previous_reading = mpu_reading;
+    mpu_reading = get_mpu_reading();
+    int oscillation = get_oscillation(mpu_reading);
 
-    if (data == BUTTON_LEFT) {
-      leds_toggle(LEDS_RED); // toggle led
-      
-      if (buzzer_state()) { // toggle buzzer
-        buzzer_stop();
-      } else {
-        int freq = abs(values.a_x) * 100;
-        printf("Freq: %d", freq);
-        buzzer_start(freq);
-      }
+    if (oscillation > OSCILLATION_THRESHOLD) {
+      int frequency = oscillation_to_frequency(oscillation);
+      play_frequency(frequency);
+    } else {
+      stop_buzzer();
     }
-  }
+
+  } // end-while
 
   PROCESS_END();
 }

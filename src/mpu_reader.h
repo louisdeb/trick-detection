@@ -2,14 +2,15 @@
 #include <stdio.h>
 
 /*---------------------------------------------------------------------------*/
+
 #define SENSOR_READING_PERIOD (CLOCK_SECOND * 2)
-#define SENSOR_READING_RANDOM (CLOCK_SECOND << 4) 
+
 /*---------------------------------------------------------------------------*/
 
 struct mpu_values {
-  int g_x;
-  int g_y;
-  int g_z;
+  float g_x;
+  float g_y;
+  float g_z;
 
   int a_x;
   int a_y;
