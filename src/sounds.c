@@ -1,26 +1,18 @@
 #include "contiki.h"
 #include "sys/etimer.h"
-#include "sys/ctimer.h"
 #include "dev/leds.h"
-#include "dev/watchdog.h"
-#include "random.h"
 #include "button-sensor.h"
-#include "batmon-sensor.h"
-#include "board-peripherals.h"
 #include "rf-core/rf-ble.h"
 
 #include "ti-lib.h"
-
-#include "mpu_reader.h"
-
 #include <stdio.h>
 #include <stdint.h>
+
+#include "mpu_reader.h"
 
 /*---------------------------------------------------------------------------*/
 #define LOOP_INTERVAL (CLOCK_SECOND * 2)
 #define BUTTON_LEFT &button_left_sensor
-#define SENSOR_READING_PERIOD (CLOCK_SECOND * 2)
-#define SENSOR_READING_RANDOM (CLOCK_SECOND << 4) 
 
 /*---------------------------------------------------------------------------*/
 
@@ -52,10 +44,12 @@ PROCESS_THREAD(sound_process, ev, data)
     // } else if(ev == sensors_event && data == &mpu_9250_sensor) {
       
     // }
+    mpu_values values = get_mpu_reading();
+    print_mpu_readings(values);
 
     if (data == BUTTON_LEFT) {
       leds_toggle(LEDS_RED); // toggle led
-      mpu_values values = get_mpu_reading();
+      
       if (buzzer_state()) { // toggle buzzer
         buzzer_stop();
       } else {

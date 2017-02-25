@@ -1,3 +1,4 @@
+#include "sys/ctimer.h"
 #include "mpu_reader.h"
 
 /*---------------------------------------------------------------------------*/
@@ -18,8 +19,7 @@ get_mpu_reading(void)
 
   mpu_values values;
 
-  clock_time_t next = SENSOR_READING_PERIOD +
-    (random_rand() % SENSOR_READING_RANDOM);
+  clock_time_t next = SENSOR_READING_PERIOD;
 
   values.g_x = mpu_9250_sensor.value(MPU_9250_SENSOR_TYPE_GYRO_X);
 
@@ -38,6 +38,19 @@ get_mpu_reading(void)
   return values;
 }
 
-void print_mpu_reading(int reading) {
-  printf("Reading: %d", reading);
+void print_mpu_reading(char* label, int reading) 
+{
+  printf("%s: %d\n", label, reading);
+}
+
+void print_mpu_readings(mpu_values values)
+{
+  printf("MPU READINGS:\n");
+  print_mpu_reading("Gyro X", values.g_x);
+  print_mpu_reading("Gyro Y", values.g_y);
+  print_mpu_reading("Gyro Z", values.g_z);
+  print_mpu_reading("Acc X", values.a_x);
+  print_mpu_reading("Acc Y", values.a_y);
+  print_mpu_reading("Acc Z", values.a_z);
+  printf("\n");
 }
