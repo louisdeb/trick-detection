@@ -19,7 +19,7 @@ static float previous_error = 0.0;
 // This could be a PID function, the only thing that matters atm is derivative.
 int get_oscillation(mpu_values reading)
 {
-  print_mpu_readings(reading);
+  // print_mpu_readings(reading);
 
   float error = -reading.g_y;
   // integral = integral + error * SENSOR_READING_PERIOD;

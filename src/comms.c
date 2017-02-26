@@ -27,4 +27,5 @@ void comms_broadcast(void) // pass some argument here
 {
   packetbuf_copyfrom("Hello", 6); // also clears packet buffer
   broadcast_send(&broadcast);
+  printf("sent broadcast\n");
 }

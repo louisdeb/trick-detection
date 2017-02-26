@@ -37,9 +37,6 @@ void play_frequency(int freq)
 {
   if (!buzzer_state()) {
     buzzer_start(freq);
-  } else {
-    buzzer_stop();
-    buzzer_start(freq);
   }
 }
 
@@ -79,11 +76,12 @@ PROCESS_THREAD(sound_process, ev, data)
     // previous_reading = mpu_reading;
     mpu_reading = get_mpu_reading();
     int oscillation = get_oscillation(mpu_reading);
+    printf("got oscillation value: %d\n", oscillation);
 
     if (oscillation > OSCILLATION_THRESHOLD) {
       int frequency = oscillation_to_frequency(oscillation);
       comms_broadcast();
-      play_frequency(frequency);
+      // play_frequency(frequency);
     } else {
       stop_buzzer();
     }
