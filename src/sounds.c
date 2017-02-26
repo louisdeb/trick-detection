@@ -31,6 +31,9 @@ AUTOSTART_PROCESSES(&sound_process);
 
 /*---------------------------------------------------------------------------*/
 
+int root_frequency = 840;
+int note_index = 0;
+
 /* Not having state checks for playing and stopping the buzzer causes
    the tag to crash. */
 void play_frequency(int freq)
@@ -79,13 +82,16 @@ PROCESS_THREAD(sound_process, ev, data)
     printf("got oscillation value: %d\n", oscillation);
 
     if (oscillation > OSCILLATION_THRESHOLD) {
-      int frequency = oscillation_to_frequency(oscillation);
+      float frequency = get_note(root_frequency, note_index);
+      note_index += 1;
+      printf("note index: %d\n", note_index);
+      printf("Frequency: %f\n", frequency);
 
       comms_packet packet;
       packet.oscillation_value = oscillation;
       comms_broadcast(packet);
 
-      play_frequency(frequency);
+      play_frequency((int) frequency);
     } else {
       stop_buzzer();
     }
