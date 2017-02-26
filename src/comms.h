@@ -11,5 +11,7 @@ struct comms_packet
 
 typedef struct comms_packet comms_packet;
 
+/*---------------------------------------------------------------------------*/
+
 void init_comms(void);
 void comms_broadcast(comms_packet);

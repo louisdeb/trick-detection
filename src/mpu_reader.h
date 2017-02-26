@@ -20,6 +20,8 @@ struct mpu_values
 
 typedef struct mpu_values mpu_values;
 
+/*---------------------------------------------------------------------------*/
+
 void init_mpu_reading(void *);
 mpu_values get_mpu_reading(void);
 void print_mpu_reading(char*, int);

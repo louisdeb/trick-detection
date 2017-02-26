@@ -22,7 +22,6 @@
 
 static struct etimer et;
 static struct mpu_values mpu_reading;
-// static struct mpu_values previous_reading;
 
 /*---------------------------------------------------------------------------*/
 
@@ -74,7 +73,6 @@ PROCESS_THREAD(sound_process, ev, data)
       }
     }
     
-    // previous_reading = mpu_reading;
     mpu_reading = get_mpu_reading();
     int oscillation = get_oscillation(mpu_reading);
     printf("got oscillation value: %d\n", oscillation);
@@ -85,7 +83,7 @@ PROCESS_THREAD(sound_process, ev, data)
       comms_packet packet;
       packet.oscillation_value = oscillation;
       comms_broadcast(packet);
-      
+
       play_frequency(frequency);
     } else {
       stop_buzzer();
