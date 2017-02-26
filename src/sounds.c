@@ -82,6 +82,7 @@ PROCESS_THREAD(sound_process, ev, data)
 
     if (oscillation > OSCILLATION_THRESHOLD) {
       int frequency = oscillation_to_frequency(oscillation);
+      comms_broadcast();
       play_frequency(frequency);
     } else {
       stop_buzzer();

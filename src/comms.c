@@ -25,6 +25,6 @@ void init_comms()
 
 void comms_broadcast(void) // pass some argument here
 {
-  packetbuf_copyfrom("Hello", 6); //packetbuf_copyfrom also calls packetbuf_clear
-  // broadcast_send(&broadcast);
+  packetbuf_copyfrom("Hello", 6); // also clears packet buffer
+  broadcast_send(&broadcast);
 }
