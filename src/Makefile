@@ -1,6 +1,6 @@
 DEFINES+=PROJECT_CONF_H=\"project-conf.h\"
 CONTIKI_PROJECT = sounds
-PROJECT_SOURCEFILES += mpu_reader.c motion_detection.c comms.c
+PROJECT_SOURCEFILES += mpu_reader.c motion_detection.c comms.c scale.c
 
 all: $(CONTIKI_PROJECT)
 

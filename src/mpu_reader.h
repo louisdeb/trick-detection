@@ -7,7 +7,7 @@
 
 /*---------------------------------------------------------------------------*/
 
-struct mpu_values 
+struct mpu_values
 {
   float g_x;
   float g_y;

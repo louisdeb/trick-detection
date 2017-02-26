@@ -10,6 +10,7 @@
 
 #include "motion_detection.h"
 #include "comms.h"
+#include "scale.h"
 
 /*---------------------------------------------------------------------------*/
 
