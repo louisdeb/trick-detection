@@ -7,7 +7,8 @@
 
 /*---------------------------------------------------------------------------*/
 
-struct mpu_values {
+struct mpu_values 
+{
   float g_x;
   float g_y;
   float g_z;
@@ -18,6 +19,8 @@ struct mpu_values {
 };
 
 typedef struct mpu_values mpu_values;
+
+/*---------------------------------------------------------------------------*/
 
 void init_mpu_reading(void *);
 mpu_values get_mpu_reading(void);
