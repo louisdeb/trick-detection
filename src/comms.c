@@ -18,7 +18,7 @@ static struct broadcast_conn broadcast;
 
 /*---------------------------------------------------------------------------*/
 
-void init_comms()
+void init_comms(void)
 {
   broadcast_open(&broadcast, BROADCAST_CHANNEL, &broadcast_call);
 }

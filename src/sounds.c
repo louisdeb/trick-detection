@@ -63,6 +63,7 @@ PROCESS_THREAD(sound_process, ev, data)
   etimer_set(&et, LOOP_INTERVAL);
 
   init_mpu_reading(NULL);
+  init_comms();
 
   while(1) 
   {
