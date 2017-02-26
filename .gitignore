@@ -4,3 +4,4 @@ src/obj_srf06-cc26xx
 *.map
 *.bin
 *.elf
+.vscode/
