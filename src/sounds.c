@@ -9,6 +9,7 @@
 #include <stdint.h>
 
 #include "motion_detection.h"
+#include "comms.h"
 
 /*---------------------------------------------------------------------------*/
 
