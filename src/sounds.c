@@ -10,7 +10,6 @@
 
 #include "motion_detection.h"
 #include "comms.h"
-#include "scale.h"
 
 /*---------------------------------------------------------------------------*/
 
@@ -31,34 +30,6 @@ AUTOSTART_PROCESSES(&sound_process);
 
 /*---------------------------------------------------------------------------*/
 
-int root_frequency = 840;
-int note_index = 0;
-
-/* Not having state checks for playing and stopping the buzzer causes
-   the tag to crash. */
-void play_frequency(int freq)
-{
-  if (!buzzer_state()) {
-    buzzer_start(freq);
-  }
-}
-
-void stop_buzzer()
-{
-  if (buzzer_state()) {
-    buzzer_stop();
-  }
-}
-
-int oscillation_to_frequency(int oscillation)
-{
-  return oscillation * 50; // turn some oscillation value into some frequency
-  // might also use frequencies given to it from other nodes so that it
-  // can harmonise
-  // that would give this function purpose enough to have its own file
-  // where we can also store information from other nodes
-}
-
 PROCESS_THREAD(sound_process, ev, data)
 {
   PROCESS_BEGIN();
@@ -78,23 +49,6 @@ PROCESS_THREAD(sound_process, ev, data)
     }
     
     mpu_reading = get_mpu_reading();
-    int oscillation = get_oscillation(mpu_reading);
-    printf("got oscillation value: %d\n", oscillation);
-
-    if (oscillation > OSCILLATION_THRESHOLD) {
-      float frequency = get_note(root_frequency, note_index);
-      note_index += 1;
-      printf("note index: %d\n", note_index);
-      printf("Frequency: %f\n", frequency);
-
-      comms_packet packet;
-      packet.oscillation_value = oscillation;
-      comms_broadcast(packet);
-
-      play_frequency((int) frequency);
-    } else {
-      stop_buzzer();
-    }
 
   } // end-while
 
