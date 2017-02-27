@@ -14,6 +14,10 @@
 
 #define LOOP_INTERVAL           (CLOCK_SECOND * 2)
 
+#define FRONT                   0
+#define BACK                    1
+#define NODE_ID                 FRONT
+
 /*---------------------------------------------------------------------------*/
 
 static struct etimer et;
@@ -47,6 +51,7 @@ PROCESS_THREAD(client_process, ev, data)
     mpu_reading = get_mpu_reading();
 
     comms_packet packet;
+    packet.node_id = NODE_ID;
     packet.mpu_reading = mpu_reading;
     comms_broadcast(packet);
   } // end-while
