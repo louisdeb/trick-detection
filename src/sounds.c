@@ -8,7 +8,6 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include "motion_detection.h"
 #include "comms.h"
 
 /*---------------------------------------------------------------------------*/
@@ -49,7 +48,7 @@ PROCESS_THREAD(sound_process, ev, data)
     }
     
     mpu_reading = get_mpu_reading();
-
+    comms_broadcast(mpu_reading);
   } // end-while
 
   PROCESS_END();
