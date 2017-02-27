@@ -1,6 +1,6 @@
-DEFINES+=PROJECT_CONF_H=\"project-conf.h\"
+DEFINES+=PROJECT_CONF_H=\"../project-conf.h\"
 CONTIKI_PROJECT = server
-PROJECT_SOURCEFILES += mpu_reader.h comms.c
+PROJECT_SOURCEFILES += comms.c
 
 all: $(CONTIKI_PROJECT)
 
@@ -9,5 +9,5 @@ BOARD=sensortag/cc2650
 CPU_FAMILY=cc26xx
 CONTIKI_WITH_RIME = 1
 
-CONTIKI = ../contiki
+CONTIKI = ../../contiki
 include $(CONTIKI)/Makefile.include

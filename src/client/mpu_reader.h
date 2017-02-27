@@ -1,24 +1,11 @@
 #include "board-peripherals.h"
 #include <stdio.h>
 
+#include "../utils.h"
+
 /*---------------------------------------------------------------------------*/
 
 #define SENSOR_READING_PERIOD (CLOCK_SECOND * 2)
-
-/*---------------------------------------------------------------------------*/
-
-struct mpu_values
-{
-  float g_x;
-  float g_y;
-  float g_z;
-
-  int a_x;
-  int a_y;
-  int a_z;
-};
-
-typedef struct mpu_values mpu_values;
 
 /*---------------------------------------------------------------------------*/
 
