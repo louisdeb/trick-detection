@@ -25,9 +25,9 @@ void init_comms(void)
   broadcast_open(&broadcast, BROADCAST_CHANNEL, &broadcast_call);
 }
 
-void comms_broadcast(mpu_values reading) // pass some argument here
+void comms_broadcast(comms_packet packet)
 {
-  packetbuf_copyfrom(&reading, sizeof reading);
+  packetbuf_copyfrom(&packet, sizeof packet);
   broadcast_send(&broadcast);
-  printf("sent broadcast, a_x: %d\n", reading.a_x);
+  printf("sent broadcast, a_x: %d\n", packet.mpu_reading.a_x);
 }

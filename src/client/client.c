@@ -20,7 +20,7 @@
 /*---------------------------------------------------------------------------*/
 
 static struct etimer et;
-static struct mpu_values mpu_reading;
+static struct mpu_values mpu_reading; // current mpu reading
 
 /*---------------------------------------------------------------------------*/
 
@@ -48,7 +48,10 @@ PROCESS_THREAD(sound_process, ev, data)
     }
     
     mpu_reading = get_mpu_reading();
-    comms_broadcast(mpu_reading);
+
+    comms_packet packet;
+    packet.mpu_reading = mpu_reading;
+    comms_broadcast(packet);
   } // end-while
 
   PROCESS_END();
