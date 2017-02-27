@@ -38,7 +38,7 @@ PROCESS_THREAD(sound_process, ev, data)
   init_mpu_reading(NULL);
   init_comms();
 
-  while(1) 
+  while(1)
   {
     PROCESS_YIELD();
     if(ev == PROCESS_EVENT_TIMER) {
