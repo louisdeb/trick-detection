@@ -1,4 +1,5 @@
-src/obj_srf06-cc26xx
+src/client/obj_srf06-cc26xx
+src/server/obj_srf06-cc26xx
 
 *.a
 *.map
