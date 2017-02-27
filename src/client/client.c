@@ -13,9 +13,6 @@
 /*---------------------------------------------------------------------------*/
 
 #define LOOP_INTERVAL           (CLOCK_SECOND * 2)
-#define OSCILLATION_THRESHOLD   1
-
-#define BUTTON_LEFT             &button_left_sensor
 
 /*---------------------------------------------------------------------------*/
 
@@ -24,12 +21,12 @@ static struct mpu_values mpu_reading; // current mpu reading
 
 /*---------------------------------------------------------------------------*/
 
-PROCESS(sound_process, "sound process");
-AUTOSTART_PROCESSES(&sound_process);
+PROCESS(client_process, "client process");
+AUTOSTART_PROCESSES(&client_process);
 
 /*---------------------------------------------------------------------------*/
 
-PROCESS_THREAD(sound_process, ev, data)
+PROCESS_THREAD(client_process, ev, data)
 {
   PROCESS_BEGIN();
   
