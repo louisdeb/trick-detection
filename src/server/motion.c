@@ -1,5 +1,6 @@
 #include "motion.h"
 #include <stdio.h>
+#include <string.h>
 
 /*---------------------------------------------------------------------------*/
 
@@ -60,9 +61,8 @@ void add_reading(int id, mpu_values reading)
       }
     }
 
-    for (int i = 1; i < 10; i++) {
-      front_readings[i-1] = front_readings[i];
-    }
+
+    memmove(&front_readings, &(front_readings[1]), 9*sizeof(mpu_values));
     front_readings[9] = &reading;
     return;
     
@@ -74,9 +74,7 @@ void add_reading(int id, mpu_values reading)
         }
     }
 
-    for (int i = 1; i < 10; i++) {
-      back_readings[i-1] = back_readings[i];
-    }
+    memmove(&back_readings, &(back_readings[1]), 9*sizeof(mpu_values));
     back_readings[9] = &reading;
     return;
 
