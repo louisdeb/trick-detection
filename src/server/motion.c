@@ -56,6 +56,13 @@ void add_reading(int id, mpu_values reading)
         return;
       }
     }
+
+    for (int i = 1; i < 10; i++) {
+      front_readings[i-1] = front_readings[i];
+    }
+    front_readings[9] = &reading;
+    return;
+    
   } else if (id == BACK) {
     for (int i = 0; i < 10; i++) {
         if (back_readings[i] == NULL) {
@@ -63,6 +70,13 @@ void add_reading(int id, mpu_values reading)
           return;
         }
     }
+
+    for (int i = 1; i < 10; i++) {
+      back_readings[i-1] = back_readings[i];
+    }
+    back_readings[9] = &reading;
+    return;
+
   }
 }
 
