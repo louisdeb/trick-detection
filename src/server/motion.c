@@ -1,4 +1,5 @@
 #include "motion.h"
+#include "contiki.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -24,35 +25,34 @@ void process_packet(comms_packet packet)
   printf("Node Id: %d\n", packet.node_id);
   print_reading(new_value);
   add_reading(packet.node_id, packet.mpu_reading);
+
+  detect_roll(*front_readings);
+}
+
+int has_state(bool (*test)(mpu_values), int start_index, mpu_values readings[10]) 
+{
+  for (int i = start_index; i < 10; i++) {
+    if (test(readings[i])) {
+      return i;
+    }
+  }
+  return -1;
 }
 
 void detect_roll(mpu_values readings[10])
 {
-  bool up, down, left, right, up_again;
-  up = down = left = right = up_again = false;
-  
-  for (int i = 0; i < 10; i++) {
-    if (!up) { // face up first
-      up = facing_up(readings[i]);
-    } else if(!right && !left && !down) { // get something other than up
-      right = facing_right(readings[i]);
-      left = facing_left(readings[i]); 
-      down = facing_down(readings[i]);
-    } else if(!down) { // goes upside-down at some point
-      down = facing_down(readings[i]);
-    } else if(!up_again) {
-      up_again = facing_up(readings[i]);
-    }
-  }
-
-  if (up && down && right && left && up_again) {
-    printf("Roll detected");
-  }
+  int up = has_state(facing_up, 0, readings);
+  if (up == -1) { return; }
+  int left = has_state(facing_left, up, readings);
+  int right = has_state(facing_right, up, readings);
+  int down = has_state(facing_down, up, readings);
+  int returning_state = MAX(MAX(left, right), down);
+  int up_again = has_state(facing_up, returning_state, readings);
+  printf("Started at up(%d), found left(%d), right(%d), down(%d), and up_again(%d)\n", up, left, right, down, up_again);
 }
 
 void add_reading(int id, mpu_values reading)
 {
-
   if (id == FRONT) {
     for (int i = 0; i < 10; i++) {
       if (front_readings[i] == NULL) {
@@ -61,23 +61,19 @@ void add_reading(int id, mpu_values reading)
       }
     }
 
-
     memmove(&front_readings, &(front_readings[1]), 9*sizeof(mpu_values));
     front_readings[9] = &reading;
-    return;
-    
-  } else if (id == BACK) {
+  } 
+  if (id == BACK) {
     for (int i = 0; i < 10; i++) {
-        if (back_readings[i] == NULL) {
-          back_readings[i] = &reading;
-          return;
-        }
+      if (back_readings[i] == NULL) {
+        back_readings[i] = &reading;
+        return;
+      }
     }
 
     memmove(&back_readings, &(back_readings[1]), 9*sizeof(mpu_values));
     back_readings[9] = &reading;
-    return;
-
   }
 }
 
