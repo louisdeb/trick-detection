@@ -17,7 +17,6 @@ mpu_values* back_readings[10];
 
 void process_packet(comms_packet packet)
 {
-
   mpu_values new_value;
   new_value = packet.mpu_reading;
 
@@ -27,21 +26,24 @@ void process_packet(comms_packet packet)
 
 void detect_roll(mpu_values readings[10])
 {
-  bool up, down, left, right;
-  up = down = left = right = false;
+  bool up, down, left, right, up_again;
+  up = down = left = right = up_again = false;
   
   for (int i = 0; i < 10; i++) {
     if (!up) { // face up first
       up = facing_up(readings[i]);
-    } else if(!right || !left) { // get a side value, either direction
+    } else if(!right && !left && !down) { // get something other than up
       right = facing_right(readings[i]);
       left = facing_left(readings[i]); 
+      down = facing_down(readings[i]);
     } else if(!down) { // goes upside-down at some point
       down = facing_down(readings[i]);
+    } else if(!up_again) {
+      up_again = facing_up(readings[i]);
     }
   }
 
-  if (up && down && right && left) {
+  if (up && down && right && left && up_again) {
     printf("Roll detected");
   }
 }
