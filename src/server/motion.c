@@ -3,7 +3,7 @@
 
 void process_packet(comms_packet packet)
 {
-  printf("Node Id: %d\n", packet.node_id);
+  printf("Node Id: %s\n", packet.node_id);
   printf("g_x: %d\n", (int) packet.mpu_reading.g_x);
   printf("g_y: %d\n", (int) packet.mpu_reading.g_y);
   printf("g_z: %d\n", (int) packet.mpu_reading.g_z);
