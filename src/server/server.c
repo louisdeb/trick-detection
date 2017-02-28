@@ -7,6 +7,7 @@
 #include "ti-lib.h"
 #include <stdio.h>
 #include <stdint.h>
+#include <malloc.h>
 
 #include "comms.h"
 
@@ -28,7 +29,7 @@ AUTOSTART_PROCESSES(&sound_process);
 PROCESS_THREAD(sound_process, ev, data)
 {
   PROCESS_BEGIN();
-  
+
   etimer_set(&et, LOOP_INTERVAL);
   init_comms();
 

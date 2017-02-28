@@ -2,25 +2,36 @@
 #include <stdio.h>
 
 mpu_values* front_readings[10];
+mpu_values* back_readings[10];
 
 void process_packet(comms_packet packet)
 {
+
+  mpu_values new_value;
+  new_value = packet.mpu_reading;
+
   printf("Node Id: %d\n", packet.node_id);
-  print_reading(packet.mpu_reading);
-  add_reading_front(packet.mpu_reading);
+  print_reading(new_value);
+  add_reading(packet.node_id, new_value);
 }
 
-void add_reading_front(mpu_values reading)
+void add_reading(int id, mpu_values reading)
 {
-  for (int i = 0; i < 10; i++) {
-    if (front_readings[i] == NULL) {
-      front_readings[i] = &reading;
-      return;
+
+  if (id == FRONT) {
+    for (int i = 0; i < 10; i++) {
+      if (front_readings[i] == NULL) {
+        front_readings[i] = &reading;
+        return;
+      }
     }
-  }
-  // stores only 10 readings
-  for (int i = 0; i < 10; i++) {
-    print_reading(*front_readings[i]);
+  } else if (id == BACK) {
+    for (int i = 0; i < 10; i++) {
+        if (back_readings[i] == NULL) {
+          back_readings[i] = &reading;
+          return;
+        }
+    }
   }
 }
 
