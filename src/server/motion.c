@@ -1,27 +1,53 @@
 #include "motion.h"
 #include <stdio.h>
 
-mpu_values* front_readings[10];
+/*---------------------------------------------------------------------------*/
+
+#define DIRECTION_TRUE      100
+#define DIRECTION_LEEWAY    10
+
+#define BOTTOM_THRESHOLD    (DIRECTION_TRUE - DIRECTION_LEEWAY)
+#define TOP_THRESHOLD       (DIRECTION_TRUE + DIRECTION_LEEWAY)
+
+/*---------------------------------------------------------------------------*/
+
+mpu_values front_readings[10];
 
 void process_packet(comms_packet packet)
 {
   printf("Node Id: %d\n", packet.node_id);
   print_reading(packet.mpu_reading);
-  add_reading_front(packet.mpu_reading);
 }
 
-void add_reading_front(mpu_values reading)
+void detect_roll(mpu_values readings[10])
 {
+  bool up, down, left, right;
+  up = down = left = right = false;
+  
   for (int i = 0; i < 10; i++) {
-    if (front_readings[i] == NULL) {
-      front_readings[i] = &reading;
-      return;
+    if (!up) { // face up first
+      up = facing_up(readings[i]);
+    } else if(!right || !left) { // get a side value, either direction
+      right = facing_right(readings[i]);
+      left = facing_left(readings[i]); 
+    } else if(!down) { // goes upside-down at some point
+      down = facing_down(readings[i]);
     }
   }
-  // stores only 10 readings
-  for (int i = 0; i < 10; i++) {
-    print_reading(*front_readings[i]);
+
+  if (up && down && right && left) {
+    printf("Roll detected");
   }
+}
+
+bool facing_up(mpu_values reading) { return facing(reading.a_z); }
+bool facing_down(mpu_values reading) { return facing(-reading.a_z); }
+bool facing_right(mpu_values reading) { return facing(reading.a_y); }
+bool facing_left(mpu_values reading) { return facing(-reading.a_y); }
+
+bool facing(int value) 
+{
+  return (value > BOTTOM_THRESHOLD && value < TOP_THRESHOLD);
 }
 
 void print_reading(mpu_values reading)
