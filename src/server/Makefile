@@ -1,6 +1,6 @@
 DEFINES+=PROJECT_CONF_H=\"../project-conf.h\"
 CONTIKI_PROJECT = server
-PROJECT_SOURCEFILES += comms.c
+PROJECT_SOURCEFILES += comms.c motion.c
 
 all: $(CONTIKI_PROJECT)
 

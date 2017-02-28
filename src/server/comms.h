@@ -2,7 +2,7 @@
 #include "net/linkaddr.h"
 #include "net/rime/rime.h"
 
-#include "../utils.h"
+#include "motion.h"
 
 /*---------------------------------------------------------------------------*/
 

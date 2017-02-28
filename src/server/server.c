@@ -30,6 +30,7 @@ PROCESS_THREAD(sound_process, ev, data)
   PROCESS_BEGIN();
   
   etimer_set(&et, LOOP_INTERVAL);
+  init_comms();
 
   PROCESS_END();
 }

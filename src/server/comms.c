@@ -11,10 +11,7 @@ static void broadcast_recv(struct broadcast_conn *c, const linkaddr_t *from)
 {
   comms_packet packet;
   memcpy(&packet, packetbuf_dataptr(), sizeof packet);
-  
-
-  // process packet
-  printf("Received mpu readings, a_x: %d\n", packet.mpu_reading.a_x);
+  process_packet(packet);
 }
 
 static const struct broadcast_callbacks broadcast_call = {broadcast_recv};
