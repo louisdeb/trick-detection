@@ -22,6 +22,7 @@ void process_packet(comms_packet packet)
 
   printf("Node Id: %d\n", packet.node_id);
   print_reading(new_value);
+  add_reading(packet.node_id, packet.mpu_reading);
 }
 
 void detect_roll(mpu_values readings[10])
