@@ -27,5 +27,9 @@ void comms_broadcast(comms_packet packet)
 {
   packetbuf_copyfrom(&packet, sizeof packet);
   broadcast_send(&broadcast);
-  printf("sent broadcast, a_x: %d\n", packet.mpu_reading.a_x);
+  printf("Sent mpu reading:\n");
+  printf("a_x:\t%d\n", packet.mpu_reading.a_x);
+  printf("a_y:\t%d\n", packet.mpu_reading.a_y);
+  printf("a_z:\t%d\n", packet.mpu_reading.a_z);
+  printf("\n");
 }

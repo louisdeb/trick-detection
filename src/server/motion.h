@@ -10,6 +10,8 @@ void add_reading(int, mpu_values);
 void print_reading(mpu_values);
 
 Roll detect_roll(mpu_values[]);
+Pop detect_pop(mpu_values[], mpu_values[]);
+
 bool facing_up(mpu_values);
 bool facing_down(mpu_values);
 bool facing_right(mpu_values);

@@ -13,13 +13,15 @@
 
 /*---------------------------------------------------------------------------*/
 
-mpu_values front_readings[10];
-mpu_values back_readings[10];
+mpu_values front_history[10];
+mpu_values back_history[10];
 
 void process_packet(comms_packet packet)
 {
   add_reading(packet.node_id, packet.mpu_reading);
-  Roll roll = detect_roll(front_readings);
+  Roll roll = detect_roll(front_history);
+  Pop pop = detect_pop(front_history, back_history);
+  // use data to determine trick
   // clear history when we know we have a trick
 }
 
@@ -36,7 +38,7 @@ int has_state(bool (*test)(mpu_values), int start_index, mpu_values readings[10]
 Roll detect_roll(mpu_values readings[10])
 {
   int up = has_state(facing_up, 0, readings);
-  if (up == -1) { return fail; }
+  if (up == -1) { return no_roll; }
   int left = has_state(facing_left, up, readings);
   int right = has_state(facing_right, up, readings);
   int down = has_state(facing_down, up, readings);
@@ -55,19 +57,12 @@ Roll detect_roll(mpu_values readings[10])
     return (left < right) ? kick : heel;
   }
 
-  return fail;
+  return no_roll;
 }
 
-void add_reading(int id, mpu_values reading)
+Pop detect_pop(mpu_values front_readings[10], mpu_values back_readings[10])
 {
-  if (id == FRONT) {
-    memmove(&front_readings, &(front_readings[1]), 9*sizeof(mpu_values));
-    front_readings[9] = reading;
-  } 
-  if (id == BACK) {
-    memmove(&back_readings, &(back_readings[1]), 9*sizeof(mpu_values));
-    back_readings[9] = reading;
-  }
+  return no_pop;
 }
 
 bool facing_up(mpu_values reading) { return facing(reading.a_z); }
@@ -78,6 +73,18 @@ bool facing_left(mpu_values reading) { return facing(-reading.a_y); }
 bool facing(int value) 
 {
   return (value > BOTTOM_THRESHOLD && value < TOP_THRESHOLD);
+}
+
+void add_reading(int id, mpu_values reading)
+{
+  if (id == FRONT) {
+    memmove(&front_history, &(front_history[1]), 9*sizeof(mpu_values));
+    front_history[9] = reading;
+  } 
+  if (id == BACK) {
+    memmove(&back_history, &(back_history[1]), 9*sizeof(mpu_values));
+    back_history[9] = reading;
+  }
 }
 
 void print_reading(mpu_values reading)
