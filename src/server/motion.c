@@ -26,7 +26,7 @@ void process_packet(comms_packet packet)
   print_reading(new_value);
   add_reading(packet.node_id, packet.mpu_reading);
 
-  //detect_roll(*front_readings);
+  detect_roll(front_readings);
   detect_one_direction_roll(front_readings);
 }
 
@@ -93,9 +93,9 @@ void add_reading(int id, mpu_values reading)
   if (id == FRONT) {
     memmove(&front_readings, &(front_readings[1]), 9*sizeof(mpu_values));
     front_readings[9] = reading;
-    for (int i = 0; i < 10; i++) {
-      print_direction(front_readings[i]);
-    }
+    //for (int i = 0; i < 10; i++) {
+    //  print_direction(front_readings[i]);
+    //}
     //printf("Shifted reading's left and added tobacco\n");
   } 
   if (id == BACK) {
