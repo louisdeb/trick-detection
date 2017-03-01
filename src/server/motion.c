@@ -6,15 +6,15 @@
 /*---------------------------------------------------------------------------*/
 
 #define DIRECTION_TRUE      100
-#define DIRECTION_LEEWAY    10
+#define DIRECTION_LEEWAY    30
 
 #define BOTTOM_THRESHOLD    (DIRECTION_TRUE - DIRECTION_LEEWAY)
 #define TOP_THRESHOLD       (DIRECTION_TRUE + DIRECTION_LEEWAY)
 
 /*---------------------------------------------------------------------------*/
 
-mpu_values* front_readings[10];
-mpu_values* back_readings[10];
+mpu_values front_readings[10];
+mpu_values back_readings[10];
 
 
 void process_packet(comms_packet packet)
@@ -26,7 +26,8 @@ void process_packet(comms_packet packet)
   print_reading(new_value);
   add_reading(packet.node_id, packet.mpu_reading);
 
-  detect_roll(*front_readings);
+  //detect_roll(*front_readings);
+  detect_one_direction_roll(front_readings);
 }
 
 int has_state(bool (*test)(mpu_values), int start_index, mpu_values readings[10]) 
@@ -39,41 +40,67 @@ int has_state(bool (*test)(mpu_values), int start_index, mpu_values readings[10]
   return -1;
 }
 
+void detect_one_direction_roll(mpu_values readings[10]) {
+  int up    = has_state(facing_up, 0, readings);
+  int left  = has_state(facing_left, 0, readings);
+  int right = has_state(facing_right, 0, readings);
+  int down  = has_state(facing_down, 0, readings);
+  printf("Up: %d\n", up);
+  printf("Left: %d\n", left);
+  printf("Right: %d\n", right);
+  printf("Down: %d\n", down);
+}
+
 void detect_roll(mpu_values readings[10])
 {
+
+  //mpu_values readings[10];
+  //memcpy(readings, readings_global, sizeof(readings));
+
   int up = has_state(facing_up, 0, readings);
   if (up == -1) { return; }
   int left = has_state(facing_left, up, readings);
   int right = has_state(facing_right, up, readings);
   int down = has_state(facing_down, up, readings);
-  int returning_state = MAX(MAX(left, right), down);
-  int up_again = has_state(facing_up, returning_state, readings);
+  int returning_state = -1;
+  if (left != 1 || right != -1 || down != -1) {
+    returning_state = MAX(MAX(left, right), down);
+  }
+
+  int up_again = -1;
+
+  if (returning_state != -1) {
+    up_again = has_state(facing_up, returning_state, readings);
+  }
+
   printf("Started at up(%d), found left(%d), right(%d), down(%d), and up_again(%d)\n", up, left, right, down, up_again);
+}
+
+void print_direction(mpu_values reading) {
+  if (facing_up(reading)) {
+    printf("UP\n");
+  } else if (facing_down(reading)) {
+    printf("DOWN\n");
+  } else if (facing_left(reading)) {
+    printf("LEFT\n");
+  } else if (facing_right(reading)) {
+    printf("RIGHT\n");
+  }
 }
 
 void add_reading(int id, mpu_values reading)
 {
   if (id == FRONT) {
-    for (int i = 0; i < 10; i++) {
-      if (front_readings[i] == NULL) {
-        front_readings[i] = &reading;
-        return;
-      }
-    }
-
     memmove(&front_readings, &(front_readings[1]), 9*sizeof(mpu_values));
-    front_readings[9] = &reading;
+    front_readings[9] = reading;
+    for (int i = 0; i < 10; i++) {
+      print_direction(front_readings[i]);
+    }
+    //printf("Shifted reading's left and added tobacco\n");
   } 
   if (id == BACK) {
-    for (int i = 0; i < 10; i++) {
-      if (back_readings[i] == NULL) {
-        back_readings[i] = &reading;
-        return;
-      }
-    }
-
     memmove(&back_readings, &(back_readings[1]), 9*sizeof(mpu_values));
-    back_readings[9] = &reading;
+    back_readings[9] = reading;
   }
 }
 
