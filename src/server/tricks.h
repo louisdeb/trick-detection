@@ -38,5 +38,22 @@ enum Trick
   nollie,
   kickflip,
   heelflip,
+  nollie_kickflip,
+  nollie_heelflip,
+  fsshuv,
+  shuv,
+  nollie_fsshuv,
+  nollie_shuv,
+  varial,
   no_trick
 };
+
+typedef enum Trick Trick;
+
+/*---------------------------------------------------------------------------*/
+
+Trick get_trick(Roll roll, Pop pop, Spin spin);
+
+
+
+
