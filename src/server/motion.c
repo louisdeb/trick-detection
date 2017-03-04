@@ -12,6 +12,7 @@
 #define DIRECTION_LEEWAY    10
 
 #define ROTATION_THRESHOLD  150
+#define VERTICAL_THRESHOLD  10
 
 #define BOTTOM_THRESHOLD    (DIRECTION_TRUE - DIRECTION_LEEWAY)
 #define TOP_THRESHOLD       (DIRECTION_TRUE + DIRECTION_LEEWAY)
@@ -31,6 +32,10 @@ void process_packet(comms_packet packet)
   Roll roll = detect_roll(history);
   Pop pop = detect_pop(front_history, back_history);
   Spin spin = detect_spin(front_history);
+
+  if (pop != no_pop) {
+    printf("You popped!: %d\n", pop);
+  }
   // use data to determine trick
   // clear history when we know we have a trick
 }
@@ -74,6 +79,19 @@ Roll detect_roll(mpu_values readings[BOTH_HISTORY_SIZE])
 
 Pop detect_pop(mpu_values front_readings[HISTORY_SIZE], mpu_values back_readings[HISTORY_SIZE])
 {
+
+  int back_up = has_state(ascending, 0, back_readings, HISTORY_SIZE);
+  int front_up = has_state(ascending, 0, front_readings, HISTORY_SIZE);
+
+  if (back_up == -1 || front_up == -1)
+    return no_pop;
+
+  if (front_up < back_up) {
+    return tail;
+  } else {
+    return nose;
+  }
+
   return no_pop;
 }
 
@@ -100,6 +118,14 @@ bool rotating_clockwise(mpu_values reading) {
 }
 bool rotating_anticlockwise(mpu_values reading) {
   return reading.g_z < -ROTATION_THRESHOLD;
+}
+
+bool ascending(mpu_values reading) {
+  return reading.g_y > VERTICAL_THRESHOLD;
+}
+
+bool descending(mpu_values reading) {
+  return reading.g_y < -VERTICAL_THRESHOLD;
 }
 
 bool facing(int value) 
