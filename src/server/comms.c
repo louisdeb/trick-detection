@@ -3,15 +3,10 @@
 
 /*---------------------------------------------------------------------------*/
 
-#define BROADCAST_CHANNEL 420
-
-/*---------------------------------------------------------------------------*/
-
 static void broadcast_recv(struct broadcast_conn *c, const linkaddr_t *from)
 {
   comms_packet packet;
   memcpy(&packet, packetbuf_dataptr(), sizeof packet);
-  packet.mpu_reading.read_time = clock_seconds();
   process_packet(packet);
 }
 

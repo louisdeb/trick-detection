@@ -4,12 +4,13 @@
 #define FRONT                   0
 #define BACK                    1
 
+// Communication broadcast channel
+#define BROADCAST_CHANNEL 420
+
 /*---------------------------------------------------------------------------*/
 
 struct mpu_values
-{
-  unsigned long read_time;
-  
+{  
   float g_x;
   float g_y;
   float g_z;
