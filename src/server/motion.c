@@ -42,6 +42,9 @@ int has_state(bool (*test)(mpu_values), int start_index, mpu_values readings[], 
   return -1;
 }
 
+// Returns a Roll based on the orientation readings from the MPU
+// Uses the interleaved history, "history", which has readings from both sensors
+// Could be improved using acceleration readings
 Roll detect_roll(mpu_values readings[BOTH_HISTORY_SIZE])
 {
   int up = has_state(facing_up, 0, readings, BOTH_HISTORY_SIZE);
@@ -59,7 +62,6 @@ Roll detect_roll(mpu_values readings[BOTH_HISTORY_SIZE])
     up_again = has_state(facing_up, returning_state, readings, BOTH_HISTORY_SIZE);
   }
 
-  printf("up(%d), down(%d), left(%d), right(%d), up_again(%d)\n", up, down, left, right, up_again);
   if (up < down && down < up_again) {
     return (left < right) ? kick : heel;
   }
