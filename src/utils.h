@@ -8,6 +8,8 @@
 
 struct mpu_values
 {
+  unsigned long read_time;
+  
   float g_x;
   float g_y;
   float g_z;

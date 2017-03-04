@@ -21,7 +21,13 @@ void process_packet(comms_packet packet)
   printf("got packet from %s\n", (packet.node_id == 0 ? "FRONT" : "BACK"));
   print_reading(packet.mpu_reading);
   add_reading(packet.node_id, packet.mpu_reading);
+
   Roll roll = detect_roll(front_history);
+
+  if (roll == kick || roll == heel) {
+    printf("nice roll!\n");
+  }
+
   Pop pop = detect_pop(front_history, back_history);
   // use data to determine trick
   // clear history when we know we have a trick
@@ -91,6 +97,7 @@ void add_reading(int id, mpu_values reading)
 
 void print_reading(mpu_values reading)
 {
+  printf("read_time: %ld\n", reading.read_time);
   printf("g_x: %d\n", (int) reading.g_x);
   printf("g_y: %d\n", (int) reading.g_y);
   printf("g_z: %d\n", (int) reading.g_z);
