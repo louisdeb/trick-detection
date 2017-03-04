@@ -8,6 +8,8 @@
 #define DIRECTION_TRUE      100
 #define DIRECTION_LEEWAY    10
 
+#define ROTATION_THRESHOLD  150
+
 #define BOTTOM_THRESHOLD    (DIRECTION_TRUE - DIRECTION_LEEWAY)
 #define TOP_THRESHOLD       (DIRECTION_TRUE + DIRECTION_LEEWAY)
 
@@ -23,6 +25,7 @@ void process_packet(comms_packet packet)
   add_reading(packet.node_id, packet.mpu_reading);
   Roll roll = detect_roll(front_history);
   Pop pop = detect_pop(front_history, back_history);
+  Spin spin = detect_spin(front_history);
   // use data to determine trick
   // clear history when we know we have a trick
 }
@@ -67,10 +70,29 @@ Pop detect_pop(mpu_values front_readings[10], mpu_values back_readings[10])
   return no_pop;
 }
 
+Spin detect_spin(mpu_values readings[10])
+{
+  if (has_state(rotating_clockwise, 0, readings) != -1) {
+    return backside;
+  }
+
+  if (has_state(rotating_anticlockwise, 0, readings) != -1) {
+    return frontside;
+  }
+  return no_spin;
+}
+
 bool facing_up(mpu_values reading) { return facing(reading.a_z); }
 bool facing_down(mpu_values reading) { return facing(-reading.a_z); }
 bool facing_right(mpu_values reading) { return facing(reading.a_y); }
 bool facing_left(mpu_values reading) { return facing(-reading.a_y); }
+
+bool rotating_clockwise(mpu_values reading) {
+  return reading.g_z > ROTATION_THRESHOLD;
+}
+bool rotating_anticlockwise(mpu_values reading) {
+  return reading.g_z < -ROTATION_THRESHOLD;
+}
 
 bool facing(int value) 
 {
