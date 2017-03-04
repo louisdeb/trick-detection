@@ -18,7 +18,7 @@ get_mpu_reading(void)
 {
   mpu_values values;
 
-  clock_time_t next = SENSOR_READING_PERIOD;
+  clock_time_t next = SENSOR_READING_PERIOD / 2;
 
   values.g_x = mpu_9250_sensor.value(MPU_9250_SENSOR_TYPE_GYRO_X) / 100;
 

@@ -18,6 +18,8 @@ mpu_values back_history[10];
 
 void process_packet(comms_packet packet)
 {
+  printf("got packet from %s\n", (packet.node_id == 0 ? "FRONT" : "BACK"));
+  print_reading(packet.mpu_reading);
   add_reading(packet.node_id, packet.mpu_reading);
   Roll roll = detect_roll(front_history);
   Pop pop = detect_pop(front_history, back_history);
