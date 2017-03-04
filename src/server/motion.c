@@ -77,15 +77,16 @@ Pop detect_pop(mpu_values front_readings[HISTORY_SIZE], mpu_values back_readings
   return no_pop;
 }
 
-Spin detect_spin(mpu_values readings[10])
+Spin detect_spin(mpu_values readings[HISTORY_SIZE])
 {
-  if (has_state(rotating_clockwise, 0, readings) != -1) {
+  if (has_state(rotating_clockwise, 0, readings, HISTORY_SIZE) != -1) {
     return backside;
   }
 
-  if (has_state(rotating_anticlockwise, 0, readings) != -1) {
+  if (has_state(rotating_anticlockwise, 0, readings, HISTORY_SIZE) != -1) {
     return frontside;
   }
+  
   return no_spin;
 }
 
