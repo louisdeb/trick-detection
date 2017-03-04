@@ -30,5 +30,53 @@ Trick get_trick(Roll roll, Pop pop, Spin spin) {
   return no_trick;
 }
 
+// Print enums
 
+const char* getRollString(Roll roll) 
+{
+  switch(roll)
+  {
+    case kick: return "Kick";
+    case heel: return "Heel";
+    default:   return "No Roll";
+  }
+}
 
+const char* getPopString(Pop pop)
+{
+  switch(pop)
+  {
+    case tail: return "Tail";
+    case nose: return "Nose";
+    default:   return "No Pop";
+  }
+}
+
+const char* getSpinString(Spin spin)
+{
+  switch(spin)
+  {
+    case frontside: return "Frontside";
+    case backside:  return "Backside";
+    default:        return "No Spin";
+  }
+}
+
+const char* getTrickString(Trick trick)
+{
+  switch(trick)
+  {
+    case ollie:           return "Ollie";
+    case nollie:          return "Nollie";
+    case kickflip:        return "Kickflip";
+    case heelflip:        return "Heelflip";
+    case nollie_kickflip: return "Nollie Kickflip";
+    case nollie_heelflip: return "Nollie Heelflip";
+    case fsshuv:          return "Frontside Shuv";
+    case shuv:            return "Pop Shuv-it";
+    case nollie_fsshuv:   return "Nollie Frontside Shuv";
+    case nollie_shuv:     return "Nollie Pop Shuv-it";
+    case varial:          return "Varial";
+    default:              return "No Trick";
+  }
+}
