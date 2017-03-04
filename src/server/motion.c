@@ -5,6 +5,9 @@
 
 /*---------------------------------------------------------------------------*/
 
+#define HISTORY_SIZE        10
+#define BOTH_HISTORY_SIZE   HISTORY_SIZE * 2
+
 #define DIRECTION_TRUE      100
 #define DIRECTION_LEEWAY    10
 
@@ -15,24 +18,26 @@
 
 /*---------------------------------------------------------------------------*/
 
-mpu_values front_history[10];
-mpu_values back_history[10];
+mpu_values front_history[HISTORY_SIZE];
+mpu_values back_history[HISTORY_SIZE];
+mpu_values history[HISTORY_SIZE * 2];
 
 void process_packet(comms_packet packet)
 {
   printf("got packet from %s\n", (packet.node_id == 0 ? "FRONT" : "BACK"));
   print_reading(packet.mpu_reading);
   add_reading(packet.node_id, packet.mpu_reading);
-  Roll roll = detect_roll(front_history);
+
+  Roll roll = detect_roll(history);
   Pop pop = detect_pop(front_history, back_history);
   Spin spin = detect_spin(front_history);
   // use data to determine trick
   // clear history when we know we have a trick
 }
 
-int has_state(bool (*test)(mpu_values), int start_index, mpu_values readings[10]) 
+int has_state(bool (*test)(mpu_values), int start_index, mpu_values readings[], int readings_size) 
 {
-  for (int i = start_index; i < 10; i++) {
+  for (int i = start_index; i < readings_size; i++) {
     if (test(readings[i])) {
       return i;
     }
@@ -40,13 +45,16 @@ int has_state(bool (*test)(mpu_values), int start_index, mpu_values readings[10]
   return -1;
 }
 
-Roll detect_roll(mpu_values readings[10])
+// Returns a Roll based on the orientation readings from the MPU
+// Uses the interleaved history, "history", which has readings from both sensors
+// Could be improved using acceleration readings
+Roll detect_roll(mpu_values readings[BOTH_HISTORY_SIZE])
 {
-  int up = has_state(facing_up, 0, readings);
+  int up = has_state(facing_up, 0, readings, BOTH_HISTORY_SIZE);
   if (up == -1) { return no_roll; }
-  int left = has_state(facing_left, up, readings);
-  int right = has_state(facing_right, up, readings);
-  int down = has_state(facing_down, up, readings);
+  int left = has_state(facing_left, up, readings, BOTH_HISTORY_SIZE);
+  int right = has_state(facing_right, up, readings, BOTH_HISTORY_SIZE);
+  int down = has_state(facing_down, up, readings, BOTH_HISTORY_SIZE);
   int returning_state = -1;
   if (left != 1 || right != -1 || down != -1) {
     returning_state = MAX(MAX(left, right), down);
@@ -54,10 +62,9 @@ Roll detect_roll(mpu_values readings[10])
 
   int up_again = -1;
   if (returning_state != -1) {
-    up_again = has_state(facing_up, returning_state, readings);
+    up_again = has_state(facing_up, returning_state, readings, BOTH_HISTORY_SIZE);
   }
 
-  printf("up(%d), down(%d), left(%d), right(%d), up_again(%d)\n", up, down, left, right, up_again);
   if (up < down && down < up_again) {
     return (left < right) ? kick : heel;
   }
@@ -65,7 +72,7 @@ Roll detect_roll(mpu_values readings[10])
   return no_roll;
 }
 
-Pop detect_pop(mpu_values front_readings[10], mpu_values back_readings[10])
+Pop detect_pop(mpu_values front_readings[HISTORY_SIZE], mpu_values back_readings[HISTORY_SIZE])
 {
   return no_pop;
 }
@@ -102,13 +109,16 @@ bool facing(int value)
 void add_reading(int id, mpu_values reading)
 {
   if (id == FRONT) {
-    memmove(&front_history, &(front_history[1]), 9*sizeof(mpu_values));
-    front_history[9] = reading;
+    memmove(&front_history, &(front_history[1]), (HISTORY_SIZE-1)*sizeof(mpu_values));
+    front_history[(HISTORY_SIZE-1)] = reading;
   } 
   if (id == BACK) {
-    memmove(&back_history, &(back_history[1]), 9*sizeof(mpu_values));
-    back_history[9] = reading;
+    memmove(&back_history, &(back_history[1]), (HISTORY_SIZE-1)*sizeof(mpu_values));
+    back_history[(HISTORY_SIZE-1)] = reading;
   }
+
+  memmove(&history, &(history[1]), (BOTH_HISTORY_SIZE-1)*sizeof(mpu_values));
+  history[(BOTH_HISTORY_SIZE-1)] = reading;
 }
 
 void print_reading(mpu_values reading)
