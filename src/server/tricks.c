@@ -30,9 +30,9 @@ Trick get_trick(Roll roll, Pop pop, Spin spin) {
   return no_trick;
 }
 
-// Print enums
+/*---------------------------------------------------------------------------*/
 
-const char* getRollString(Roll roll) 
+const char* get_roll_string(Roll roll) 
 {
   switch(roll)
   {
@@ -42,7 +42,7 @@ const char* getRollString(Roll roll)
   }
 }
 
-const char* getPopString(Pop pop)
+const char* get_pop_string(Pop pop)
 {
   switch(pop)
   {
@@ -52,7 +52,7 @@ const char* getPopString(Pop pop)
   }
 }
 
-const char* getSpinString(Spin spin)
+const char* get_spin_string(Spin spin)
 {
   switch(spin)
   {
@@ -62,7 +62,7 @@ const char* getSpinString(Spin spin)
   }
 }
 
-const char* getTrickString(Trick trick)
+const char* get_trick_string(Trick trick)
 {
   switch(trick)
   {

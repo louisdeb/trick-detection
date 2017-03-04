@@ -31,6 +31,11 @@ void process_packet(comms_packet packet)
   Roll roll = detect_roll(history);
   Pop pop = detect_pop(front_history, back_history);
   Spin spin = detect_spin(front_history);
+
+  Trick trick = get_trick(roll, pop, spin);
+  if (trick != no_trick) {
+    printf("Trick: %s\n", get_trick_string(trick));
+  }
   // use data to determine trick
   // clear history when we know we have a trick
 }

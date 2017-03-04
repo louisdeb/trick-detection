@@ -54,10 +54,10 @@ typedef enum Trick Trick;
 
 Trick get_trick(Roll roll, Pop pop, Spin spin);
 
-const char* getRollString(Roll);
-const char* getPopString(Pop);
-const char* getSpinString(Spin);
-const char* getTrickString(Trick);
+const char* get_roll_string(Roll);
+const char* get_pop_string(Pop);
+const char* get_spin_string(Spin);
+const char* get_trick_string(Trick);
 
 
 
