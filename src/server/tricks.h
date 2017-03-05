@@ -13,9 +13,9 @@ typedef enum Roll Roll;
 
 enum Pop
 {
-  tail,
-  nose,
-  no_pop
+  tail = 1,
+  nose = 2,
+  no_pop = 0
 };
 
 typedef enum Pop Pop;
