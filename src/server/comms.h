@@ -8,3 +8,4 @@
 
 void init_comms(void);
 void comms_broadcast(comms_packet);
+void fix_values(comms_packet*);

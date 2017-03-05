@@ -6,9 +6,6 @@
 
 void process_packet(comms_packet);
 
-void add_reading(int, mpu_values);
-void print_reading(mpu_values);
-
 Roll detect_roll(mpu_values[]);
 Pop detect_pop(mpu_values[], mpu_values[]);
 Spin detect_spin(mpu_values[]);
@@ -25,3 +22,9 @@ bool rotating_clockwise(mpu_values);
 bool rotating_anticlockwise(mpu_values);
 bool ascending(mpu_values);
 bool descending(mpu_values);
+
+bool at_origin(mpu_values);
+
+void add_reading(int, mpu_values);
+void reset_histories(void);
+void print_reading(mpu_values);

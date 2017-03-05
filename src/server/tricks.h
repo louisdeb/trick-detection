@@ -58,7 +58,3 @@ const char* get_roll_string(Roll);
 const char* get_pop_string(Pop);
 const char* get_spin_string(Spin);
 const char* get_trick_string(Trick);
-
-
-
-
