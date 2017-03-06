@@ -30,7 +30,7 @@ Trick previous_trick = no_trick;
 
 void process_packet(comms_packet packet)
 {
-  printf("%s: %d\n", (packet.node_id == 0 ? "FRONT" : "BACK"), (int) packet.mpu_reading.g_y);
+  printf("%s: a_y: %d, a_z: %d\n", (packet.node_id == 0 ? "FRONT" : "BACK"), packet.mpu_reading.a_y, packet.mpu_reading.a_z);
   // print_reading(packet.mpu_reading);
   add_reading(packet.node_id, packet.mpu_reading);
 
@@ -64,6 +64,17 @@ int has_state(bool (*test)(mpu_values), int start_index, mpu_values readings[], 
 
 /*---------------------------------------------------------------------------*/
 
+Pop detect_pop(mpu_values front_readings[HISTORY_SIZE], mpu_values back_readings[HISTORY_SIZE])
+{
+  int back_up = has_state(ascending, 0, back_readings, HISTORY_SIZE);
+  int front_up = has_state(ascending, 0, front_readings, HISTORY_SIZE);
+
+  if (back_up == -1 && front_up == -1)
+    return no_pop;
+
+  return (front_up < back_up) ? tail : nose;
+}
+
 // Returns a Roll based on the orientation readings from the MPU
 // Uses the interleaved history, "history", which has readings from both sensors
 // Could be improved using acceleration readings
@@ -91,18 +102,6 @@ Roll detect_roll(mpu_values readings[BOTH_HISTORY_SIZE])
   return no_roll;
 }
 
-Pop detect_pop(mpu_values front_readings[HISTORY_SIZE], mpu_values back_readings[HISTORY_SIZE])
-{
-  int back_up = has_state(ascending, 0, back_readings, HISTORY_SIZE);
-  int front_up = has_state(ascending, 0, front_readings, HISTORY_SIZE);
-
-  if (back_up == -1 && front_up == -1)
-    return no_pop;
-
-  return (front_up < back_up) ? tail : nose;
-}
-
-// Changed to both history - maybe doesn't need to be
 Spin detect_spin(mpu_values readings[BOTH_HISTORY_SIZE])
 {
   if (has_state(rotating_clockwise, 0, readings, BOTH_HISTORY_SIZE) != -1) {
