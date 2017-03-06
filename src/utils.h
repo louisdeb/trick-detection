@@ -9,6 +9,7 @@
 
 /*---------------------------------------------------------------------------*/
 
+// A container for accelerometer readings
 struct mpu_values
 {  
   float g_x;
@@ -24,6 +25,7 @@ typedef struct mpu_values mpu_values;
 
 /*---------------------------------------------------------------------------*/
 
+// A packet format, sent from node to node
 struct comms_packet 
 {
   int node_id;

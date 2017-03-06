@@ -19,15 +19,18 @@
 
 /*---------------------------------------------------------------------------*/
 
+// Histories are the backlog of accelerometer readings. We can reason over
+// changes in values over time to detect tricks.
 mpu_values front_history[HISTORY_SIZE];
 mpu_values back_history[HISTORY_SIZE];
 mpu_values history[HISTORY_SIZE * 2];
 
+// Previous trick is used to better detect when we have finished a trick.
 Trick previous_trick = no_trick;
 
 void process_packet(comms_packet packet)
 {
-  // printf("got packet from %s\n", (packet.node_id == 0 ? "FRONT" : "BACK"));
+  printf("%s: %d\n", (packet.node_id == 0 ? "FRONT" : "BACK"), (int) packet.mpu_reading.g_y);
   // print_reading(packet.mpu_reading);
   add_reading(packet.node_id, packet.mpu_reading);
 
@@ -45,7 +48,7 @@ void process_packet(comms_packet packet)
       && trick != no_trick) || previous_trick == no_trick) {
     previous_trick = trick;
   }
-} // we are printing ollie instead of nollie
+}
 
 /*---------------------------------------------------------------------------*/
 
