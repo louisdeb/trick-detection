@@ -12,7 +12,7 @@
 #define DIRECTION_LEEWAY    20
 
 #define ROTATION_THRESHOLD  150
-#define VERTICAL_THRESHOLD  5
+#define VERTICAL_THRESHOLD  10
 
 #define BOTTOM_THRESHOLD    (DIRECTION_TRUE - DIRECTION_LEEWAY)
 #define TOP_THRESHOLD       (DIRECTION_TRUE + DIRECTION_LEEWAY)
@@ -30,7 +30,7 @@ Trick previous_trick = no_trick;
 
 void process_packet(comms_packet packet)
 {
-  printf("%s: a_y: %d, a_z: %d\n", (packet.node_id == 0 ? "FRONT" : "BACK"), packet.mpu_reading.a_y, packet.mpu_reading.a_z);
+  printf("%s: %d\n", (packet.node_id == 0 ? "FRONT" : "BACK"), (int) packet.mpu_reading.g_z);
   // print_reading(packet.mpu_reading);
   add_reading(packet.node_id, packet.mpu_reading);
 
@@ -85,6 +85,7 @@ Roll detect_roll(mpu_values readings[BOTH_HISTORY_SIZE])
   int left = has_state(facing_left, up, readings, BOTH_HISTORY_SIZE);
   int right = has_state(facing_right, up, readings, BOTH_HISTORY_SIZE);
   int down = has_state(facing_down, up, readings, BOTH_HISTORY_SIZE);
+
   int returning_state = -1;
   if (left != 1 || right != -1 || down != -1) {
     returning_state = MAX(MAX(left, right), down);
@@ -123,12 +124,11 @@ bool facing_right(mpu_values reading) { return facing(reading.a_y); }
 bool facing_left(mpu_values reading) { return facing(-reading.a_y); }
 
 bool rotating_clockwise(mpu_values reading) {
-  // print_reading(reading);
-  return reading.g_z > ROTATION_THRESHOLD;
+  return reading.g_z <- ROTATION_THRESHOLD;
 }
 
 bool rotating_anticlockwise(mpu_values reading) {
-  return reading.g_z < -ROTATION_THRESHOLD;
+  return reading.g_z > ROTATION_THRESHOLD;
 }
 
 bool ascending(mpu_values reading) {
