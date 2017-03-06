@@ -30,8 +30,7 @@ Trick previous_trick = no_trick;
 
 void process_packet(comms_packet packet)
 {
-  printf("%s: %d\n", (packet.node_id == 0 ? "FRONT" : "BACK"), (int) packet.mpu_reading.g_z);
-  // print_reading(packet.mpu_reading);
+  printf("%s: %d\n", (packet.node_id == 0 ? "FRONT" : "BACK"), (int) packet.mpu_reading.g_y);
   add_reading(packet.node_id, packet.mpu_reading);
 
   Roll roll = detect_roll(history);
