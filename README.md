@@ -1,13 +1,14 @@
-# Sounds of the Surf
+# Skateboard Trick Detection
 
-When lots of wireless sensors are placed on a body of water, the sensors 
-emit buzzer tones of frequencies in harmony of any ripples in that body.
+By attaching two sensors to the bottom of your skateboard, this project detects the trick you have performed and reports it on the basestation (currently a third sensor attached to a computer).
 
 The project was developed on TI CC2650 Sensortags, running the Contiki operating
 system. It was a project for Imperial College 3rd Year's Pervasive Computing 
 course.
 
-## Running Sounds of the Surf
+The project uses detection algorithms designed by the developers. It could be improved by the use of machine learning. Given the time restriction of the project we chose to not follow this route.
+
+## Running the project
 
 - Clone this repo and make sure contiki/ is also cloned
 - Download UniFlash
@@ -19,7 +20,7 @@ course.
 Inside the `contiki/` folder, run `git submodule update --init` to download the 
 contiki-os requirements.
 
-## Debugging Sounds of the Surf
+## Debugging the project
 
 You can listen to the output of the code running on the sensor by first running
 
